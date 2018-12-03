@@ -75,7 +75,10 @@ this admin group:
 ```
 usermod -aG sudo grader
 ```
-
+you can access server by
+```
+ssh -i ~/.ssh/id_rsa grader@159.89.17.50 -p 2200
+```
 
 3. Prepare to deploy  project.
 
