@@ -17,7 +17,7 @@ This is the sixth project for the Udacity Full Stack Nanodegree. This project in
 This project uses [Digitalocean] to create a Linux server instance.
 
 
-1. Secure the server.
+##1. Secure the server.
 
     - Update all currently installed packages.
     
@@ -54,9 +54,9 @@ chown grader:grader /home/grader/.ssh/authorized_keys
 chmod 644 /home/grader/.ssh/authorized_keys
 ```
 
-2. Give grader access.
+##2. Give grader access.
 
-## Add user and set a password
+### Add user and set a password
 Add user `grader` with command:
 
 ```
@@ -69,7 +69,7 @@ Set a password for the user (you need this when running the `sudo` command) with
 passwd grader
 ```
 
-## Add user grader to sudo group
+### Add user grader to sudo group
 Assuming your Linux distro has a `sudo` group (like Ubuntu 16.04), simply add the user to
 this admin group:
 ```
@@ -80,7 +80,7 @@ you can access server by
 ssh -i ~/.ssh/id_rsa grader@159.89.17.50 -p 2200
 ```
 
-3. Prepare to deploy  project.
+##3. Prepare to deploy  project.
 
     - Configure the local timezone to UTC.
     
