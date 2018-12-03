@@ -1,7 +1,5 @@
 # Linux Server Configuration
 
-> Dustin D'Avignon
-
 ## About
 
 This is the sixth project for the Udacity Full Stack Nanodegree. This project involves taking a baseline installation of Linux on a virtual machine and preparing it to host web applications. This includes installing updates, securing the server from attacks, and installing / configuring web and database servers.
@@ -9,40 +7,33 @@ This is the sixth project for the Udacity Full Stack Nanodegree. This project in
 
 # Server Info
 
-- **Public IP:** 34.210.194.203
-- **Port:** 2200
+- **Public IP:** 159.89.17.50
+- **SShPort:** 2200
 
-- http://34.210.194.203/
+- http://159.89.17.50
 
 ## Getting Started
 
-This project uses [Amazon Lightsail](https://amazonlightsail.com/) to create a Linux server instance.
+This project uses [Digitalocean] to create a Linux server instance.
 
-1. Get your server.
 
-    - Start a new Ubuntu Linux server instance on Amazon Lightsail. 
-        
-        * Log in!
-        * Create an instance
-        * Choose an instance image: Ubuntu (OS only)
-        * Choose your instance plan (lowest tier is fine)
-        * Give your instance a hostname
-        * Wait for startup
-        * Once the instance has started up, follow the instructions provided to SSH into your server.
-
-2. Secure your server.
+1. Secure the server.
 
     - Update all currently installed packages.
     
             sudo apt-get update
             sudo apt-get upgrade
             
-        auto upgrades run
-            sudo dpkg-reconfigure --priority=low unattended-upgrades
-    - Change the SSH port from 22 to 2200. Make sure to configure the Lightsail firewall to allow it.
-            
-            sudo vim /etc/ssh/sshd_config
-        change port form 22 to 2200
+    - Change the SSH port from 22 to 2200.
+    
+            Edit the file `/etc/ssh/sshd_config` and change the line `Port 22` to:
+
+`Port 2200`
+
+Then restart the SSH service:
+
+`sudo service ssh restart`
+
         
         
     - Configure the Uncomplicated Firewall (UFW) to only allow incoming connections for SSH (port 2200), HTTP (port 80), and NTP (port 123).
@@ -52,35 +43,46 @@ This project uses [Amazon Lightsail](https://amazonlightsail.com/) to create a L
             sudo ufw allow 123/tcp
             sudo ufw enable
 
-        Warning: When changing the SSH port, make sure that the firewall is open for port 2200 first, so that you don't lock yourself out of the server. Review this video for details! When you change the SSH port, the Lightsail instance will no longer be accessible through the web app 'Connect using SSH' button. The button assumes the default port is being used. There are instructions on the same page for connecting from your terminal to the instance. Connect using those instructions and then follow the rest of the steps.
-        
+        ## Set-up SSH keys for user grader
+As root user do:
+```
+mkdir /home/grader/.ssh
+chown grader:grader /home/grader/.ssh
+chmod 700 /home/grader/.ssh
+cp /root/.ssh/authorized_keys /home/grader/.ssh/
+chown grader:grader /home/grader/.ssh/authorized_keys
+chmod 644 /home/grader/.ssh/authorized_keys
+```
 
-3. Give grader access.
+2. Give grader access.
 
-    In order for your project to be reviewed, the grader needs to be able to log in to your server.
+## Add user and set a password
+Add user `grader` with command:
 
-    - Create a new user account named grader.
-    
-            sudo adduser grader
-    - Give grader the permission to sudo.
-    
-            sudo vim /etc/sudoers.d/grader
-        add text `grader ALL=(ALL) NOPASSWD:ALL`
-    - Create an SSH key pair for grader using the ssh-keygen tool.
-            
-                ssh-keygen -t rsa
-                
-            To login
-                ssh -i .ssh/grader_udacity grader@34.210.194.203 -p 2200
+```
+useradd -m -s /bin/bash grader
+```
+
+Set a password for the user (you need this when running the `sudo` command) with:
+
+```
+passwd grader
+```
+
+## Add user grader to sudo group
+Assuming your Linux distro has a `sudo` group (like Ubuntu 16.04), simply add the user to
+this admin group:
+```
+usermod -aG sudo grader
+```
 
 
-4. Prepare to deploy your project.
+3. Prepare to deploy  project.
 
     - Configure the local timezone to UTC.
     
-            sudo dpkg-reconfigure tzdata
+            `sudo timedatectl set-timezone UTC`
             
-        * select none of the above, then UTC
             
     - Install and configure Apache to serve a Python mod_wsgi application.
     
@@ -91,19 +93,12 @@ This project uses [Amazon Lightsail](https://amazonlightsail.com/) to create a L
         https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-uwsgi-and-nginx-on-ubuntu-16-04
         
 
-    - Install and configure PostgreSQL:
-    
-            sudo apt-get install postgresql
 
-5. Do not allow remote connections
-    
-    Create a new database user named catalog that has limited permissions to your catalog application database.
-    
-        https://help.ubuntu.com/community/PostgreSQL
 
-6. Deploy the Item Catalog project.
 
-    http://34.210.194.203/
+. Deploy the Item Catalog project.
+
+    http://159.89.17.50
     
 ## Resources
 
